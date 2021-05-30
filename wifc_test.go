@@ -55,6 +55,42 @@ func Test_Uint320_Add(t *testing.T) {
 	}
 }
 
+func Test_Uint320_Mul(t *testing.T) {
+	tests := []struct {
+		x wifc.Uint320
+		y uint64
+		z wifc.Uint320
+	}{
+		{
+			wifc.Uint320{1, 0, 0, 0, 0},
+			0,
+			wifc.Uint320{0, 0, 0, 0, 0},
+		},
+		{
+			wifc.Uint320{1, 2, 3, 4, 5},
+			1,
+			wifc.Uint320{1, 2, 3, 4, 5},
+		},
+		{
+			wifc.Uint320{1, 2, 3, 4, 5},
+			2,
+			wifc.Uint320{2, 4, 6, 8, 10},
+		},
+		{
+			wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
+			math.MaxUint64,
+			wifc.Uint320{1, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
+		},
+	}
+
+	for _, tt := range tests {
+		z := tt.x.Mul(tt.y)
+		if z != tt.z {
+			t.Errorf("expected: %v, but got %v", tt.z, z)
+		}
+	}
+}
+
 // func Benchmark_Uint320_Add(b *testing.B) {
 // 	x := wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64}
 // 	y := wifc.Uint320{1, 1, 1, 1, 1}
@@ -62,6 +98,15 @@ func Test_Uint320_Add(t *testing.T) {
 // 	b.ResetTimer()
 // 	for i := 0; i < b.N; i++ {
 // 		_ = x.Add(y)
+// 	}
+// }
+
+// func Benchmark_Uint320_Mul(b *testing.B) {
+// 	x := wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64}
+
+// 	b.ResetTimer()
+// 	for i := 0; i < b.N; i++ {
+// 		_ = x.Mul(58)
 // 	}
 // }
 

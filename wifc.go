@@ -2,6 +2,7 @@ package wifc
 
 import (
 	"errors"
+	"math/bits"
 )
 
 func IsValid(key string) bool {
@@ -29,27 +30,34 @@ func (n Uint320) IsValid() bool {
 	return true
 }
 
-// 本家は中身の中身は assembly だった
+// 用途的に不要なので桁あふれは呼び出し元に返さない
 func (x Uint320) Add(y Uint320) Uint320 {
-	var prev uint64
-	var overflow bool
-
+	var z Uint320
+	var c uint64
 	for i := 0; i < 5; i++ {
-		if overflow {
-			prev = x[i]
-			x[i]++
-			overflow = false
-			if prev > x[i] {
-				overflow = true
-			}
-		}
-
-		prev = x[i]
-		x[i] += y[i]
-		if prev > x[i] {
-			overflow = true
-		}
+		zi, cc := bits.Add64(x[i], y[i], c)
+		z[i] = zi
+		c = cc
 	}
+	return z
+}
 
-	return x
+// 用途的に不要なので桁あふれは呼び出し元に返さない
+func (x Uint320) Mul(y uint64) Uint320 {
+	var z Uint320
+	var c uint64
+	for i := 0; i < 5; i++ {
+		z1, z0 := mul(x[i], y, z[i])
+		lo, cc := bits.Add64(z0, c, 0)
+		c, z[i] = cc, lo
+		c += z1
+	}
+	return z
+}
+
+// Add/Mul/mul の中身は math/big/arith.go の実装をパクってる
+func mul(x, y, c uint64) (z1, z0 uint64) {
+	hi, lo := bits.Mul64(x, y)
+	lo, cc := bits.Add64(lo, c, 0)
+	return hi + cc, lo
 }
