@@ -1,0 +1,5 @@
+wifc
+====
+
+Validate compressed FIF
+
