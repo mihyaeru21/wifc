@@ -2,6 +2,7 @@ package wifc
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"errors"
 	"fmt"
 	"math/bits"
@@ -34,7 +35,28 @@ func BuildUint320(key string) (Uint320, error) {
 }
 
 func (n Uint320) IsValid() bool {
-	return true
+	raw := n.Bytes()
+
+	// TODO: Bytes() せずに判定したい
+	// ここが 0x01 ではない場合は invalid 確定なので hash を見る必要がない
+	if raw[35] != 0x01 {
+		return false
+	}
+
+	data := raw[2:36]    // 上位2 byte が無駄に多いを抜いて 32 byte + 前後の 2 byte
+	checksum := raw[36:] // 末尾の 4 byte
+
+	hasher := sha256.New()
+	hasher.Write(data)
+	hash := hasher.Sum(nil)
+	hasher.Reset()
+	hasher.Write(hash)
+	hash = hasher.Sum(nil)
+
+	return checksum[0] == hash[0] &&
+		checksum[1] == hash[1] &&
+		checksum[2] == hash[2] &&
+		checksum[3] == hash[3]
 }
 
 func (n Uint320) Bytes() [40]byte {

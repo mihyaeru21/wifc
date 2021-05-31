@@ -125,6 +125,25 @@ func Test_Uint320_Bytes(t *testing.T) {
 	}
 }
 
+func Test_Uint320_IsValid(t *testing.T) {
+	valid, _ := wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
+	if !valid.IsValid() {
+		t.Error("!!!!!")
+	}
+
+	// checksum がダメなケース
+	invalid1, _ := wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33X")
+	if invalid1.IsValid() {
+		t.Error("!!!!!")
+	}
+
+	// 大事な桁が 0x01 じゃないケース(途中の w を W に変えてある)
+	invalid2, _ := wifc.BuildUint320("L3JLGe5rCiCsWFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
+	if invalid2.IsValid() {
+		t.Error("!!!!!")
+	}
+}
+
 // func Benchmark_BuildUint320(b *testing.B) {
 // 	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
 
@@ -167,12 +186,33 @@ func Test_Uint320_Bytes(t *testing.T) {
 // 	}
 // }
 
-// func BenchmarkIsValid(b *testing.B) {
+// func Benchmark_Uint320_Bytes(b *testing.B) {
 // 	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
+// 	x, _ := wifc.BuildUint320(key)
 
 // 	b.ResetTimer()
 // 	for i := 0; i < b.N; i++ {
-// 		_ = wifc.IsValid(key)
+// 		_ = x.Bytes()
+// 	}
+// }
+
+// func Benchmark_Uint320_IsValid_full(b *testing.B) {
+// 	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
+// 	x, _ := wifc.BuildUint320(key)
+
+// 	b.ResetTimer()
+// 	for i := 0; i < b.N; i++ {
+// 		_ = x.IsValid()
+// 	}
+// }
+
+// func Benchmark_Uint320_IsValid_fast(b *testing.B) {
+// 	key := "L3JLGe5rCiCsWFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
+// 	x, _ := wifc.BuildUint320(key)
+
+// 	b.ResetTimer()
+// 	for i := 0; i < b.N; i++ {
+// 		_ = x.IsValid()
 // 	}
 // }
 
