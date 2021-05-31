@@ -11,10 +11,6 @@ const characters = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
 var characterBytes = []byte(characters)
 
-func IsValid(key string) bool {
-	return true
-}
-
 // key 32 bytes + head 0x08 byte + tail 0x01 byte + hash 4 bytes = 38 bytes
 type Uint320 [5]uint64
 
@@ -39,6 +35,21 @@ func BuildUint320(key string) (Uint320, error) {
 
 func (n Uint320) IsValid() bool {
 	return true
+}
+
+func (n Uint320) Bytes() [40]byte {
+	buf := [40]byte{}
+
+	i := 40
+	for _, d := range n {
+		for j := 0; j < 8; j++ {
+			i--
+			buf[i] = byte(d)
+			d >>= 8
+		}
+	}
+
+	return buf
 }
 
 // 用途的に不要なので桁あふれは呼び出し元に返さない

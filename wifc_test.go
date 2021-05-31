@@ -102,11 +102,49 @@ func Test_Uint320_Mul(t *testing.T) {
 	}
 }
 
+func Test_Uint320_Bytes(t *testing.T) {
+	tests := []struct {
+		x     wifc.Uint320
+		bytes [40]byte
+	}{
+		{
+			wifc.Uint320{1, 2, 3, 4, 5},
+			[40]byte{0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 1},
+		},
+		{
+			wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
+			[40]byte{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
+		},
+	}
+
+	for _, tt := range tests {
+		bytes := tt.x.Bytes()
+		if bytes != tt.bytes {
+			t.Errorf("expected: %v, but got %v", tt.bytes, bytes)
+		}
+	}
+}
+
 // func Benchmark_BuildUint320(b *testing.B) {
 // 	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
+
+// 	base, _ := wifc.BuildUint320(key)
+
+// 	// base := big.NewInt(0)
+// 	// for i := 0; i < 52; i++ {
+// 	// 	base.Mul(base, big.NewInt(58))
+// 	// 	base.Add(base, big.NewInt(int64(i)))
+// 	// }
+
 // 	b.ResetTimer()
 // 	for i := 0; i < b.N; i++ {
-// 		_, _ = wifc.BuildUint320(key)
+// 		// _, _ = wifc.BuildUint320(key)
+
+// 		a := wifc.Uint320{30}
+// 		_ = base.Add(a)
+
+// 		// a := big.NewInt(30)
+// 		// _ = base.Add(base, a)
 // 	}
 // }
 
