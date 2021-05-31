@@ -8,14 +8,25 @@ import (
 )
 
 func Test_BuildUint320(t *testing.T) {
-	_, err := wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
-	if err != nil {
-		t.Error(err)
+	_, err := wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q_")
+	if err == nil {
+		t.Error("Error must be present.")
+	}
+	if err.Error() != "Invalid key length." {
+		t.Errorf("Error message is invalid: %v", err.Error())
 	}
 
-	_, err = wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q_")
+	_, err = wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33_")
 	if err == nil {
-		t.Error("err to be present.")
+		t.Error("Error must be present.")
+	}
+	if err.Error() != "Invalid character: 95" { // _ は 95
+		t.Errorf("Error message is invalid: %v", err.Error())
+	}
+
+	_, err = wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
+	if err != nil {
+		t.Error(err)
 	}
 }
 
@@ -90,6 +101,14 @@ func Test_Uint320_Mul(t *testing.T) {
 		}
 	}
 }
+
+// func Benchmark_BuildUint320(b *testing.B) {
+// 	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
+// 	b.ResetTimer()
+// 	for i := 0; i < b.N; i++ {
+// 		_, _ = wifc.BuildUint320(key)
+// 	}
+// }
 
 // func Benchmark_Uint320_Add(b *testing.B) {
 // 	x := wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64}

@@ -1,9 +1,15 @@
 package wifc
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
 	"math/bits"
 )
+
+const characters = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+
+var characterBytes = []byte(characters)
 
 func IsValid(key string) bool {
 	return true
@@ -12,15 +18,20 @@ func IsValid(key string) bool {
 // key 32 bytes + head 0x08 byte + tail 0x01 byte + hash 4 bytes = 38 bytes
 type Uint320 [5]uint64
 
-func newEmptyUint320() Uint320 {
-	return Uint320{}
-}
-
 func BuildUint320(key string) (Uint320, error) {
-	num := newEmptyUint320()
+	num := Uint320{}
 
 	if len(key) != 52 {
 		return num, errors.New("Invalid key length.")
+	}
+
+	for _, c := range key {
+		i := bytes.IndexByte(characterBytes, byte(c))
+		if i == -1 {
+			return num, fmt.Errorf("Invalid character: %v", c)
+		}
+		num = num.Mul(58)
+		num = num.Add(Uint320{uint64(i)})
 	}
 
 	return num, nil
