@@ -1,5 +1,5 @@
 wifc
 ====
 
-Validate compressed FIF
+Validate compressed WIF
 
