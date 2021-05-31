@@ -144,29 +144,6 @@ func Test_Uint320_IsValid(t *testing.T) {
 	}
 }
 
-// func Benchmark_BuildUint320(b *testing.B) {
-// 	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
-
-// 	base, _ := wifc.BuildUint320(key)
-
-// 	// base := big.NewInt(0)
-// 	// for i := 0; i < 52; i++ {
-// 	// 	base.Mul(base, big.NewInt(58))
-// 	// 	base.Add(base, big.NewInt(int64(i)))
-// 	// }
-
-// 	b.ResetTimer()
-// 	for i := 0; i < b.N; i++ {
-// 		// _, _ = wifc.BuildUint320(key)
-
-// 		a := wifc.Uint320{30}
-// 		_ = base.Add(a)
-
-// 		// a := big.NewInt(30)
-// 		// _ = base.Add(base, a)
-// 	}
-// }
-
 // func Benchmark_Uint320_Add(b *testing.B) {
 // 	x := wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64}
 // 	y := wifc.Uint320{1, 1, 1, 1, 1}
@@ -232,7 +209,7 @@ func Test_Uint320_IsValid(t *testing.T) {
 // 	}
 // }
 
-// func BenchmarkConcatString(b *testing.B) {
+// func Benchmark_Slow(b *testing.B) {
 // 	first := "AAAA"
 // 	chunks := []string{
 // 		"BBBBBBBBB",
@@ -244,6 +221,7 @@ func Test_Uint320_IsValid(t *testing.T) {
 
 // 	b.ResetTimer()
 // 	for i := 0; i < b.N; i++ {
-// 		_ = first + strings.Join(chunks, "")
+// 		key := first + strings.Join(chunks, "")
+// 		_, _ = base58check.Decode(key)
 // 	}
 // }

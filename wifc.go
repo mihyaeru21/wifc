@@ -34,24 +34,23 @@ func BuildUint320(key string) (Uint320, error) {
 	return num, nil
 }
 
-func (n Uint320) IsValid() bool {
-	raw := n.Bytes()
+// 末尾の 5 byte 目を見るためのマスク
+const mask uint64 = 0x000000ff00000000
 
-	// TODO: Bytes() せずに判定したい
+func (n Uint320) IsValid() bool {
 	// ここが 0x01 ではない場合は invalid 確定なので hash を見る必要がない
-	if raw[35] != 0x01 {
+	// 255/256 はこっちを通る
+	x := (n[0] & mask) >> 32
+	if x != 0x01 {
 		return false
 	}
 
-	data := raw[2:36]    // 上位2 byte が無駄に多いを抜いて 32 byte + 前後の 2 byte
+	raw := n.Bytes()
+	data := raw[2:36]    // 上位2 byte が無駄に多いのを抜いて 32 byte + 前後の 2 byte
 	checksum := raw[36:] // 末尾の 4 byte
 
-	hasher := sha256.New()
-	hasher.Write(data)
-	hash := hasher.Sum(nil)
-	hasher.Reset()
-	hasher.Write(hash)
-	hash = hasher.Sum(nil)
+	hash := sha256.Sum256(data)
+	hash = sha256.Sum256(hash[:])
 
 	return checksum[0] == hash[0] &&
 		checksum[1] == hash[1] &&
@@ -100,6 +99,7 @@ func (x Uint320) Mul(y uint64) Uint320 {
 }
 
 // Add/Mul/mul の中身は math/big/arith.go の実装をパクってる
+// より速度が欲しくなったら assembly 実装をパクってくる
 func mul(x, y, c uint64) (z1, z0 uint64) {
 	hi, lo := bits.Mul64(x, y)
 	lo, cc := bits.Add64(lo, c, 0)
