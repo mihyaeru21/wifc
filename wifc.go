@@ -28,7 +28,7 @@ func BuildUint320(key string) (Uint320, error) {
 			return num, fmt.Errorf("Invalid character: %v", c)
 		}
 		num = num.Mul(58)
-		num = num.Add(Uint320{uint64(i)})
+		num.AddMut(Uint320{uint64(i)})
 	}
 
 	return num, nil
@@ -37,11 +37,10 @@ func BuildUint320(key string) (Uint320, error) {
 // 末尾の 5 byte 目を見るためのマスク
 const mask uint64 = 0x000000ff00000000
 
-func (n Uint320) IsValid() bool {
+func (n *Uint320) IsValid() bool {
 	// ここが 0x01 ではない場合は invalid 確定なので hash を見る必要がない
 	// 255/256 はこっちを通る
-	x := (n[0] & mask) >> 32
-	if x != 0x01 {
+	if n[0]&mask != 0x0000000100000000 {
 		return false
 	}
 
@@ -58,7 +57,7 @@ func (n Uint320) IsValid() bool {
 		checksum[3] == hash[3]
 }
 
-func (n Uint320) Bytes() [40]byte {
+func (n *Uint320) Bytes() [40]byte {
 	buf := [40]byte{}
 
 	i := 40
@@ -74,15 +73,11 @@ func (n Uint320) Bytes() [40]byte {
 }
 
 // 用途的に不要なので桁あふれは呼び出し元に返さない
-func (x Uint320) Add(y Uint320) Uint320 {
-	var z Uint320
+func (x *Uint320) AddMut(y Uint320) {
 	var c uint64
 	for i := 0; i < 5; i++ {
-		zi, cc := bits.Add64(x[i], y[i], c)
-		z[i] = zi
-		c = cc
+		x[i], c = bits.Add64(x[i], y[i], c)
 	}
-	return z
 }
 
 // 用途的に不要なので桁あふれは呼び出し元に返さない

@@ -59,9 +59,10 @@ func Test_Uint320_Add(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		z := tt.x.Add(tt.y)
-		if z != tt.z {
-			t.Errorf("expected: %v, but got %v", tt.z, z)
+		x := tt.x // ポインタに対するメソッドを呼び出せるようにするためいったん変数に入れる
+		x.AddMut(tt.y)
+		if x != tt.z {
+			t.Errorf("expected: %v, but got %v", tt.z, x)
 		}
 	}
 }
