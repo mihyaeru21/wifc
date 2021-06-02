@@ -28,7 +28,7 @@ func BuildUint320(key string) (Uint320, error) {
 			return num, fmt.Errorf("Invalid character: %v", c)
 		}
 		num = num.Mul(58)
-		num.AddMut(Uint320{uint64(i)})
+		num.AddMut(&Uint320{uint64(i)})
 	}
 
 	return num, nil
@@ -44,6 +44,12 @@ func (n *Uint320) IsValid() bool {
 		return false
 	}
 
+	return n.isValidHash()
+}
+
+// IsValid のほとんどのケースでは stack 領域にすら hash 計算用のメモリを確保する必要がない
+// hash 計算部分を別の関数にしておくことで IsValid の時点でメモリが確保されるのを回避する
+func (n *Uint320) isValidHash() bool {
 	raw := n.Bytes()
 	data := raw[2:36]    // 上位2 byte が無駄に多いのを抜いて 32 byte + 前後の 2 byte
 	checksum := raw[36:] // 末尾の 4 byte
@@ -73,11 +79,13 @@ func (n *Uint320) Bytes() [40]byte {
 }
 
 // 用途的に不要なので桁あふれは呼び出し元に返さない
-func (x *Uint320) AddMut(y Uint320) {
+func (x *Uint320) AddMut(y *Uint320) {
 	var c uint64
-	for i := 0; i < 5; i++ {
-		x[i], c = bits.Add64(x[i], y[i], c)
-	}
+	x[0], c = bits.Add64(x[0], y[0], 0)
+	x[1], c = bits.Add64(x[1], y[1], c)
+	x[2], c = bits.Add64(x[2], y[2], c)
+	x[3], c = bits.Add64(x[3], y[3], c)
+	x[4], _ = bits.Add64(x[4], y[4], c)
 }
 
 // 用途的に不要なので桁あふれは呼び出し元に返さない
