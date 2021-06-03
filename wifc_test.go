@@ -194,22 +194,6 @@ func Test_Decimal_IsValid(t *testing.T) {
 // 	}
 // }
 
-// func BenchmarkBase58CheckValid(b *testing.B) {
-// 	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
-// 	b.ResetTimer()
-// 	for i := 0; i < b.N; i++ {
-// 		_, _ = base58check.Decode(key)
-// 	}
-// }
-
-// func BenchmarkBase58CheckInvalid(b *testing.B) {
-// 	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33X"
-// 	b.ResetTimer()
-// 	for i := 0; i < b.N; i++ {
-// 		_, _ = base58check.Decode(key)
-// 	}
-// }
-
 // func Benchmark_Fast(b *testing.B) {
 // 	x, _ := wifc.BuildFromKey("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
 // 	yy, _ := wifc.BuildFromKey("1111111111111111111111111121111111111111111111111111")
