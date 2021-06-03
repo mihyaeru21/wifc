@@ -36,7 +36,7 @@ func BuildFromKey(key string) (Decimal, error) {
 
 func (n *Decimal) IsValid() bool {
 	// 255/256 はこっちを通る
-	if n.IsValidDigit() {
+	if !n.IsValidDigit() {
 		return false
 	}
 
@@ -48,7 +48,7 @@ const mask uint64 = 0x000000ff00000000
 
 // ここが 0x01 ではない場合は invalid 確定なので hash を見る必要がない
 func (n *Decimal) IsValidDigit() bool {
-	return n[0]&mask != 0x0000000100000000
+	return n[0]&mask == 0x0000000100000000
 }
 
 // IsValid のほとんどのケースでは stack 領域にすら hash 計算用のメモリを確保する必要がない
