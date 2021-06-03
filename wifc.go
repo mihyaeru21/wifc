@@ -34,22 +34,26 @@ func BuildFromKey(key string) (Decimal, error) {
 	return num, nil
 }
 
-// 末尾の 5 byte 目を見るためのマスク
-const mask uint64 = 0x000000ff00000000
-
 func (n *Decimal) IsValid() bool {
-	// ここが 0x01 ではない場合は invalid 確定なので hash を見る必要がない
 	// 255/256 はこっちを通る
-	if n[0]&mask != 0x0000000100000000 {
+	if n.IsValidDigit() {
 		return false
 	}
 
-	return n.isValidHash()
+	return n.IsValidHash()
+}
+
+// 末尾の 5 byte 目を見るためのマスク
+const mask uint64 = 0x000000ff00000000
+
+// ここが 0x01 ではない場合は invalid 確定なので hash を見る必要がない
+func (n *Decimal) IsValidDigit() bool {
+	return n[0]&mask != 0x0000000100000000
 }
 
 // IsValid のほとんどのケースでは stack 領域にすら hash 計算用のメモリを確保する必要がない
 // hash 計算部分を別の関数にしておくことで IsValid の時点でメモリが確保されるのを回避する
-func (n *Decimal) isValidHash() bool {
+func (n *Decimal) IsValidHash() bool {
 	raw := n.Bytes()
 	data := raw[2:36]    // 上位2 byte が無駄に多いのを抜いて 32 byte + 前後の 2 byte
 	checksum := raw[36:] // 末尾の 4 byte
