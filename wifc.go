@@ -13,10 +13,10 @@ const characters = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 var characterBytes = []byte(characters)
 
 // key 32 bytes + head 0x08 byte + tail 0x01 byte + hash 4 bytes = 38 bytes
-type Uint320 [5]uint64
+type Decimal [5]uint64
 
-func BuildUint320(key string) (Uint320, error) {
-	num := Uint320{}
+func BuildFromKey(key string) (Decimal, error) {
+	num := Decimal{}
 
 	if len(key) != 52 {
 		return num, errors.New("Invalid key length.")
@@ -28,7 +28,7 @@ func BuildUint320(key string) (Uint320, error) {
 			return num, fmt.Errorf("Invalid character: %v", c)
 		}
 		num = num.Mul(58)
-		num.AddMut(&Uint320{uint64(i)})
+		num.AddMut(&Decimal{uint64(i)})
 	}
 
 	return num, nil
@@ -37,7 +37,7 @@ func BuildUint320(key string) (Uint320, error) {
 // 末尾の 5 byte 目を見るためのマスク
 const mask uint64 = 0x000000ff00000000
 
-func (n *Uint320) IsValid() bool {
+func (n *Decimal) IsValid() bool {
 	// ここが 0x01 ではない場合は invalid 確定なので hash を見る必要がない
 	// 255/256 はこっちを通る
 	if n[0]&mask != 0x0000000100000000 {
@@ -49,7 +49,7 @@ func (n *Uint320) IsValid() bool {
 
 // IsValid のほとんどのケースでは stack 領域にすら hash 計算用のメモリを確保する必要がない
 // hash 計算部分を別の関数にしておくことで IsValid の時点でメモリが確保されるのを回避する
-func (n *Uint320) isValidHash() bool {
+func (n *Decimal) isValidHash() bool {
 	raw := n.Bytes()
 	data := raw[2:36]    // 上位2 byte が無駄に多いのを抜いて 32 byte + 前後の 2 byte
 	checksum := raw[36:] // 末尾の 4 byte
@@ -63,7 +63,7 @@ func (n *Uint320) isValidHash() bool {
 		checksum[3] == hash[3]
 }
 
-func (n *Uint320) Bytes() [40]byte {
+func (n *Decimal) Bytes() [40]byte {
 	buf := [40]byte{}
 
 	i := 40
@@ -79,7 +79,7 @@ func (n *Uint320) Bytes() [40]byte {
 }
 
 // 用途的に不要なので桁あふれは呼び出し元に返さない
-func (x *Uint320) AddMut(y *Uint320) {
+func (x *Decimal) AddMut(y *Decimal) {
 	var c uint64
 	x[0], c = bits.Add64(x[0], y[0], 0)
 	x[1], c = bits.Add64(x[1], y[1], c)
@@ -89,8 +89,8 @@ func (x *Uint320) AddMut(y *Uint320) {
 }
 
 // 用途的に不要なので桁あふれは呼び出し元に返さない
-func (x Uint320) Mul(y uint64) Uint320 {
-	var z Uint320
+func (x Decimal) Mul(y uint64) Decimal {
+	var z Decimal
 	var c uint64
 	for i := 0; i < 5; i++ {
 		z1, z0 := mul(x[i], y, z[i])

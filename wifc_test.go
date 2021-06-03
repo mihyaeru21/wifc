@@ -7,8 +7,8 @@ import (
 	"github.com/mihyaeru21/wifc"
 )
 
-func Test_BuildUint320(t *testing.T) {
-	_, err := wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q_")
+func Test_BuildFromKey(t *testing.T) {
+	_, err := wifc.BuildFromKey("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q_")
 	if err == nil {
 		t.Error("Error must be present.")
 	}
@@ -16,7 +16,7 @@ func Test_BuildUint320(t *testing.T) {
 		t.Errorf("Error message is invalid: %v", err.Error())
 	}
 
-	_, err = wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33_")
+	_, err = wifc.BuildFromKey("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33_")
 	if err == nil {
 		t.Error("Error must be present.")
 	}
@@ -24,37 +24,37 @@ func Test_BuildUint320(t *testing.T) {
 		t.Errorf("Error message is invalid: %v", err.Error())
 	}
 
-	_, err = wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
+	_, err = wifc.BuildFromKey("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
 	if err != nil {
 		t.Error(err)
 	}
 }
 
-func Test_Uint320_Add(t *testing.T) {
+func Test_Decimal_AddMut(t *testing.T) {
 	tests := []struct {
-		x wifc.Uint320
-		y wifc.Uint320
-		z wifc.Uint320
+		x wifc.Decimal
+		y wifc.Decimal
+		z wifc.Decimal
 	}{
 		{
-			wifc.Uint320{0, 0, 0, 0, 0},
-			wifc.Uint320{0, 0, 0, 0, 0},
-			wifc.Uint320{0, 0, 0, 0, 0},
+			wifc.Decimal{0, 0, 0, 0, 0},
+			wifc.Decimal{0, 0, 0, 0, 0},
+			wifc.Decimal{0, 0, 0, 0, 0},
 		},
 		{
-			wifc.Uint320{1, 2, 3, 4, 5},
-			wifc.Uint320{1, 1, 1, 1, 1},
-			wifc.Uint320{2, 3, 4, 5, 6},
+			wifc.Decimal{1, 2, 3, 4, 5},
+			wifc.Decimal{1, 1, 1, 1, 1},
+			wifc.Decimal{2, 3, 4, 5, 6},
 		},
 		{
-			wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
-			wifc.Uint320{2, 0, 0, 0, 0},
-			wifc.Uint320{1, 0, 0, 0, 0},
+			wifc.Decimal{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
+			wifc.Decimal{2, 0, 0, 0, 0},
+			wifc.Decimal{1, 0, 0, 0, 0},
 		},
 		{
-			wifc.Uint320{2, 0, 0, 0, 0},
-			wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
-			wifc.Uint320{1, 0, 0, 0, 0},
+			wifc.Decimal{2, 0, 0, 0, 0},
+			wifc.Decimal{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
+			wifc.Decimal{1, 0, 0, 0, 0},
 		},
 	}
 
@@ -67,31 +67,31 @@ func Test_Uint320_Add(t *testing.T) {
 	}
 }
 
-func Test_Uint320_Mul(t *testing.T) {
+func Test_Decimal_Mul(t *testing.T) {
 	tests := []struct {
-		x wifc.Uint320
+		x wifc.Decimal
 		y uint64
-		z wifc.Uint320
+		z wifc.Decimal
 	}{
 		{
-			wifc.Uint320{1, 0, 0, 0, 0},
+			wifc.Decimal{1, 0, 0, 0, 0},
 			0,
-			wifc.Uint320{0, 0, 0, 0, 0},
+			wifc.Decimal{0, 0, 0, 0, 0},
 		},
 		{
-			wifc.Uint320{1, 2, 3, 4, 5},
+			wifc.Decimal{1, 2, 3, 4, 5},
 			1,
-			wifc.Uint320{1, 2, 3, 4, 5},
+			wifc.Decimal{1, 2, 3, 4, 5},
 		},
 		{
-			wifc.Uint320{1, 2, 3, 4, 5},
+			wifc.Decimal{1, 2, 3, 4, 5},
 			2,
-			wifc.Uint320{2, 4, 6, 8, 10},
+			wifc.Decimal{2, 4, 6, 8, 10},
 		},
 		{
-			wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
+			wifc.Decimal{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
 			math.MaxUint64,
-			wifc.Uint320{1, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
+			wifc.Decimal{1, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
 		},
 	}
 
@@ -103,17 +103,17 @@ func Test_Uint320_Mul(t *testing.T) {
 	}
 }
 
-func Test_Uint320_Bytes(t *testing.T) {
+func Test_Decimal_Bytes(t *testing.T) {
 	tests := []struct {
-		x     wifc.Uint320
+		x     wifc.Decimal
 		bytes [40]byte
 	}{
 		{
-			wifc.Uint320{1, 2, 3, 4, 5},
+			wifc.Decimal{1, 2, 3, 4, 5},
 			[40]byte{0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 1},
 		},
 		{
-			wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
+			wifc.Decimal{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
 			[40]byte{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
 		},
 	}
@@ -126,37 +126,37 @@ func Test_Uint320_Bytes(t *testing.T) {
 	}
 }
 
-func Test_Uint320_IsValid(t *testing.T) {
-	valid, _ := wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
+func Test_Decimal_IsValid(t *testing.T) {
+	valid, _ := wifc.BuildFromKey("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
 	if !valid.IsValid() {
 		t.Error("!!!!!")
 	}
 
 	// checksum がダメなケース
-	invalid1, _ := wifc.BuildUint320("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33X")
+	invalid1, _ := wifc.BuildFromKey("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33X")
 	if invalid1.IsValid() {
 		t.Error("!!!!!")
 	}
 
 	// 大事な桁が 0x01 じゃないケース(途中の w を W に変えてある)
-	invalid2, _ := wifc.BuildUint320("L3JLGe5rCiCsWFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
+	invalid2, _ := wifc.BuildFromKey("L3JLGe5rCiCsWFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
 	if invalid2.IsValid() {
 		t.Error("!!!!!")
 	}
 }
 
-// func Benchmark_Uint320_Add(b *testing.B) {
-// 	x := wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64}
-// 	y := wifc.Uint320{1, 1, 1, 1, 1}
+// func Benchmark_Decimal_AddMut(b *testing.B) {
+// 	x := wifc.Decimal{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64}
+// 	y := &wifc.Decimal{1, 1, 1, 1, 1}
 
 // 	b.ResetTimer()
 // 	for i := 0; i < b.N; i++ {
-// 		_ = x.Add(y)
+// 		x.AddMut(y)
 // 	}
 // }
 
-// func Benchmark_Uint320_Mul(b *testing.B) {
-// 	x := wifc.Uint320{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64}
+// func Benchmark_Decimal_Mul(b *testing.B) {
+// 	x := wifc.Decimal{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64}
 
 // 	b.ResetTimer()
 // 	for i := 0; i < b.N; i++ {
@@ -164,9 +164,9 @@ func Test_Uint320_IsValid(t *testing.T) {
 // 	}
 // }
 
-// func Benchmark_Uint320_Bytes(b *testing.B) {
+// func Benchmark_Decimal_Bytes(b *testing.B) {
 // 	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
-// 	x, _ := wifc.BuildUint320(key)
+// 	x, _ := wifc.BuildDecimal(key)
 
 // 	b.ResetTimer()
 // 	for i := 0; i < b.N; i++ {
@@ -174,9 +174,9 @@ func Test_Uint320_IsValid(t *testing.T) {
 // 	}
 // }
 
-// func Benchmark_Uint320_IsValid_full(b *testing.B) {
+// func Benchmark_Decimal_IsValid_full(b *testing.B) {
 // 	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
-// 	x, _ := wifc.BuildUint320(key)
+// 	x, _ := wifc.BuildFromKey(key)
 
 // 	b.ResetTimer()
 // 	for i := 0; i < b.N; i++ {
@@ -184,9 +184,9 @@ func Test_Uint320_IsValid(t *testing.T) {
 // 	}
 // }
 
-// func Benchmark_Uint320_IsValid_fast(b *testing.B) {
+// func Benchmark_Decimal_IsValid_fast(b *testing.B) {
 // 	key := "L3JLGe5rCiCsWFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
-// 	x, _ := wifc.BuildUint320(key)
+// 	x, _ := wifc.BuildFromKey(key)
 
 // 	b.ResetTimer()
 // 	for i := 0; i < b.N; i++ {
@@ -207,6 +207,28 @@ func Test_Uint320_IsValid(t *testing.T) {
 // 	b.ResetTimer()
 // 	for i := 0; i < b.N; i++ {
 // 		_, _ = base58check.Decode(key)
+// 	}
+// }
+
+// func Benchmark_Fast(b *testing.B) {
+// 	x, _ := wifc.BuildFromKey("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
+// 	yy, _ := wifc.BuildFromKey("1111111111111111111111111121111111111111111111111111")
+// 	y := &yy
+
+// 	// 1/1 slow
+// 	// y, _ := wifc.BuildFromKey("1111111111121111111111111111111111111111111111111111")
+
+// 	// 1/2 slow
+// 	// y, _ := wifc.BuildFromKey("1111111111112111111111111111111111111111111111111111")
+
+// 	// 1/4 slow
+// 	// y, _ := wifc.BuildFromKey("1111111111111211111111111111111111111111111111111111")
+
+// 	b.ResetTimer()
+// 	for i := 0; i < b.N; i++ {
+// 		// y をループ中で足し続けることで58進数の特定の桁について1ずつ増やしていく操作になる
+// 		x.AddMut(y)
+// 		_ = x.IsValid()
 // 	}
 // }
 
