@@ -12,7 +12,7 @@ func Test_BuildFromKey(t *testing.T) {
 	if err == nil {
 		t.Error("Error must be present.")
 	}
-	if err.Error() != "Invalid key length." {
+	if err.Error() != "invalid key length" {
 		t.Errorf("Error message is invalid: %v", err.Error())
 	}
 
@@ -20,7 +20,7 @@ func Test_BuildFromKey(t *testing.T) {
 	if err == nil {
 		t.Error("Error must be present.")
 	}
-	if err.Error() != "Invalid character: 95" { // _ は 95
+	if err.Error() != "invalid character: 95" { // _ は 95
 		t.Errorf("Error message is invalid: %v", err.Error())
 	}
 

@@ -19,13 +19,13 @@ func BuildFromKey(key string) (Decimal, error) {
 	num := Decimal{}
 
 	if len(key) != 52 {
-		return num, errors.New("Invalid key length.")
+		return num, errors.New("invalid key length")
 	}
 
 	for _, c := range key {
 		i := bytes.IndexByte(characterBytes, byte(c))
 		if i == -1 {
-			return num, fmt.Errorf("Invalid character: %v", c)
+			return num, fmt.Errorf("invalid character: %v", c)
 		}
 		num = num.Mul(58)
 		num.AddMut(&Decimal{uint64(i)})
