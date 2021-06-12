@@ -55,8 +55,8 @@ func (n *Decimal) IsValidDigit() bool {
 // hash 計算部分を別の関数にしておくことで IsValid の時点でメモリが確保されるのを回避する
 func (n *Decimal) IsValidHash() bool {
 	raw := n.Bytes()
-	data := raw[2:36]    // 上位2 byte が無駄に多いのを抜いて 32 byte + 前後の 2 byte
-	checksum := raw[36:] // 末尾の 4 byte
+	data := raw[:34]     // 32 byte + 前後の 2 byte
+	checksum := raw[34:] // 末尾の 4 byte
 
 	hash := sha256.Sum256(data)
 	hash = sha256.Sum256(hash[:])
@@ -67,17 +67,92 @@ func (n *Decimal) IsValidHash() bool {
 		checksum[3] == hash[3]
 }
 
-func (n *Decimal) Bytes() [40]byte {
-	buf := [40]byte{}
+// 上位の2 byte は端数なので返さない
+// ループをやめて展開したら2倍くらい速くなった
+func (n *Decimal) Bytes() [38]byte {
+	buf := [38]byte{}
 
-	i := 40
-	for _, d := range n {
-		for j := 0; j < 8; j++ {
-			i--
-			buf[i] = byte(d)
-			d >>= 8
-		}
-	}
+	d := n[0]
+	buf[37] = byte(d)
+	d >>= 8
+	buf[36] = byte(d)
+	d >>= 8
+	buf[35] = byte(d)
+	d >>= 8
+	buf[34] = byte(d)
+	d >>= 8
+	buf[33] = byte(d)
+	d >>= 8
+	buf[32] = byte(d)
+	d >>= 8
+	buf[31] = byte(d)
+	d >>= 8
+	buf[30] = byte(d)
+
+	d = n[1]
+	buf[29] = byte(d)
+	d >>= 8
+	buf[28] = byte(d)
+	d >>= 8
+	buf[27] = byte(d)
+	d >>= 8
+	buf[26] = byte(d)
+	d >>= 8
+	buf[25] = byte(d)
+	d >>= 8
+	buf[24] = byte(d)
+	d >>= 8
+	buf[23] = byte(d)
+	d >>= 8
+	buf[22] = byte(d)
+
+	d = n[2]
+	buf[21] = byte(d)
+	d >>= 8
+	buf[20] = byte(d)
+	d >>= 8
+	buf[19] = byte(d)
+	d >>= 8
+	buf[18] = byte(d)
+	d >>= 8
+	buf[17] = byte(d)
+	d >>= 8
+	buf[16] = byte(d)
+	d >>= 8
+	buf[15] = byte(d)
+	d >>= 8
+	buf[14] = byte(d)
+
+	d = n[3]
+	buf[13] = byte(d)
+	d >>= 8
+	buf[12] = byte(d)
+	d >>= 8
+	buf[11] = byte(d)
+	d >>= 8
+	buf[10] = byte(d)
+	d >>= 8
+	buf[9] = byte(d)
+	d >>= 8
+	buf[8] = byte(d)
+	d >>= 8
+	buf[7] = byte(d)
+	d >>= 8
+	buf[6] = byte(d)
+
+	d = n[4]
+	buf[5] = byte(d)
+	d >>= 8
+	buf[4] = byte(d)
+	d >>= 8
+	buf[3] = byte(d)
+	d >>= 8
+	buf[2] = byte(d)
+	d >>= 8
+	buf[1] = byte(d)
+	d >>= 8
+	buf[0] = byte(d)
+	// 上位の2 byte は捨てる
 
 	return buf
 }

@@ -106,15 +106,15 @@ func Test_Decimal_Mul(t *testing.T) {
 func Test_Decimal_Bytes(t *testing.T) {
 	tests := []struct {
 		x     wifc.Decimal
-		bytes [40]byte
+		bytes [38]byte
 	}{
 		{
 			wifc.Decimal{1, 2, 3, 4, 5},
-			[40]byte{0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 1},
+			[38]byte{0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 1},
 		},
 		{
 			wifc.Decimal{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
-			[40]byte{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
+			[38]byte{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
 		},
 	}
 
@@ -166,7 +166,7 @@ func Test_Decimal_IsValid(t *testing.T) {
 
 // func Benchmark_Decimal_Bytes(b *testing.B) {
 // 	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
-// 	x, _ := wifc.BuildDecimal(key)
+// 	x, _ := wifc.BuildFromKey(key)
 
 // 	b.ResetTimer()
 // 	for i := 0; i < b.N; i++ {
