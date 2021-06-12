@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"math/big"
 	"math/bits"
 )
 
@@ -15,6 +16,7 @@ var characterBytes = []byte(characters)
 // key 32 bytes + head 0x08 byte + tail 0x01 byte + hash 4 bytes = 38 bytes
 type Decimal [5]uint64
 
+// from https://github.com/anaskhan96/base58check/blob/master/base58check.go#L114
 func BuildFromKey(key string) (Decimal, error) {
 	num := Decimal{}
 
@@ -153,4 +155,22 @@ func mul(x, y, c uint64) (z1, z0 uint64) {
 	hi, lo := bits.Mul64(x, y)
 	lo, cc := bits.Add64(lo, c, 0)
 	return hi + cc, lo
+}
+
+// from https://github.com/anaskhan96/base58check/blob/master/base58check.go#L99
+func (n *Decimal) Base58() string {
+	raw := n.Bytes()
+
+	var encoded string
+	decimalData := new(big.Int)
+	decimalData.SetBytes(raw[:])
+	divisor, zero := big.NewInt(58), big.NewInt(0)
+
+	for decimalData.Cmp(zero) > 0 {
+		mod := new(big.Int)
+		decimalData.DivMod(decimalData, divisor, mod)
+		encoded = string(characters[mod.Int64()]) + encoded
+	}
+
+	return encoded
 }
