@@ -145,6 +145,14 @@ func Test_Decimal_IsValid(t *testing.T) {
 	}
 }
 
+func Test_Decimal_Base58(t *testing.T) {
+	key := "L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q"
+	n, _ := wifc.BuildFromKey(key)
+	if n.Base58() != key {
+		t.Error("!!!")
+	}
+}
+
 // func Benchmark_Decimal_AddMut(b *testing.B) {
 // 	x := wifc.Decimal{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64}
 // 	y := &wifc.Decimal{1, 1, 1, 1, 1}
