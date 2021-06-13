@@ -153,6 +153,14 @@ func Test_Decimal_Base58(t *testing.T) {
 	}
 }
 
+func Test_Decimal_Address(t *testing.T) {
+	wif, _ := wifc.BuildFromKey("L3JLGe5rCiCswFyUKrLZc38iGunHULPk4aFFuHELHKUunt1Ke33Q")
+	addr := wif.Address()
+	if addr != "19o9R48VyCCiqSNirCr1SJEWQaTS1BpEEt" {
+		t.Error("!!!")
+	}
+}
+
 // func Benchmark_Decimal_AddMut(b *testing.B) {
 // 	x := wifc.Decimal{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64}
 // 	y := &wifc.Decimal{1, 1, 1, 1, 1}
