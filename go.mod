@@ -2,4 +2,7 @@ module github.com/mihyaeru21/wifc
 
 go 1.16
 
-require github.com/anaskhan96/base58check v0.0.0-20181220122047-b05365d494c4
+require (
+	github.com/btcsuite/btcd v0.21.0-beta
+	github.com/btcsuite/btcutil v1.0.2
+)
